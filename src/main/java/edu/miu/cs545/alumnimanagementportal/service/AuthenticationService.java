@@ -5,6 +5,7 @@ import edu.miu.cs545.alumnimanagementportal.auth.LoginRequest;
 import edu.miu.cs545.alumnimanagementportal.auth.RegisterRequest;
 import edu.miu.cs545.alumnimanagementportal.entiteis.Role;
 import edu.miu.cs545.alumnimanagementportal.entiteis.User;
+import edu.miu.cs545.alumnimanagementportal.repository.RoleRepository;
 import edu.miu.cs545.alumnimanagementportal.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,14 +32,16 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final RoleRepository roleRepository;
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
+        var roles = roleRepository.findByRole("USER");
         var user = User.builder()
                 .firstname(registerRequest.getFirstname())
                 .lastname(registerRequest.getLastname())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .role(Role.ADM)
+                .roles(roles)
                 .build();
         userRepository.save(user);
         var token = jwtService.generateToken(user);
@@ -51,29 +54,31 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(LoginRequest loginRequest) {
 
-        Authentication result = null;
-        try {
-            result = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-            );
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException(e.getMessage());
-        }
+//        Authentication result = null;
+//        try {
+//            result = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+//            );
+//        } catch (BadCredentialsException e) {
+//            throw new BadCredentialsException(e.getMessage());
+//        }
 
-//        Authentication authenticate = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(result.getName());
+//        final UserDetails userDetails = userDetailsService.loadUserByUsername(result.getName());
 
-//        var user = userRepository.findByEmail(loginRequest.getEmail())
-//              .orElseThrow();
-        var token = jwtService.generateToken(userDetails);
+        var user = userRepository.findByEmail(loginRequest.getEmail())
+              .orElseThrow();
+        var token = jwtService.generateToken(user);
       //  var refreshToken = jwtService.generateRefreshToken(user);
         return AuthenticationResponse.builder()
                 .accessToken(token)
               //  .refreshToken(refreshToken)
                 .build();
     }
+
+
 
 //    public void refreshToken(HttpServletRequest request, HttpServletResponse response)  throws IOException {
 //            final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);

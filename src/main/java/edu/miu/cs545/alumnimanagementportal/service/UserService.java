@@ -16,14 +16,13 @@ import java.util.List;
 public class UserService {
     private final UserRepository repo;
     private final ModelMapper mapper;
-    //private final ListMapper mapperr;
 
     public List<UserDto> getAll() {
         var entities = repo.findAll();
-        //return mapperr.mapList(entities, UserDto.class);
         List<UserDto> userDtoList = new ArrayList<>();
        entities.forEach(entity ->{
             UserDto dto = mapper.map(entity, UserDto.class);
+        //   System.out.println("userDto " + dto.getRoleDtoList());
             userDtoList.add(dto);
         });
 

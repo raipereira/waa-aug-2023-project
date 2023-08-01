@@ -23,22 +23,21 @@ public class User implements UserDetails {
     private String lastname;
     private String email;
     private String password;
-//    @OneToMany(fetch = FetchType.EAGER)
-//    //@JoinTable in case of ManyToMany
-//    private List<Role> roles;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable
+    private List<Role> roles;
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole()))
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole()))
+                .collect(Collectors.toList());
     }
+
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return List.of(new SimpleGrantedAuthority(role.name()));
+//    }
 
     @Override
     public String getPassword() {
