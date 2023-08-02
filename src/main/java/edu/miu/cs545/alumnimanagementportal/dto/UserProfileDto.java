@@ -11,10 +11,10 @@ import lombok.Data;
 public class UserProfileDto {
     private Long id;
     private Long userId;
-    private Address address;
-    private int phone;
+    //private Integer phone;
     private String picture;
-    private String gradeLevel;
+    //private String gradeLevel;
     private String professionalachievement;
     private String bio;
+   // private AddressDto address;
 }

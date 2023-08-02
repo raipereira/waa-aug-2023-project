@@ -5,10 +5,7 @@ import edu.miu.cs545.alumnimanagementportal.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/profiles")
@@ -21,5 +18,15 @@ public class UserProfileController {
     public ResponseEntity create(@RequestBody UserProfileDto dto){
         service.create(dto);
         return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{userId}")
+    public UserProfileDto profileByUserId(@PathVariable Long userId){
+        return service.profileByUserId(userId);
+    }
+
+    @PutMapping("/{userId}")
+    public void editProfileByUserId(@RequestBody UserProfileDto dto, @PathVariable Long userId){
+         service.EditProfileByUserId(dto, userId);
     }
 }

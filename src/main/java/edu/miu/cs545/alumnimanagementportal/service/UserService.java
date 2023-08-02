@@ -22,7 +22,6 @@ public class UserService {
         List<UserDto> userDtoList = new ArrayList<>();
        entities.forEach(entity ->{
             UserDto dto = mapper.map(entity, UserDto.class);
-        //   System.out.println("userDto " + dto.getRoleDtoList());
             userDtoList.add(dto);
         });
 

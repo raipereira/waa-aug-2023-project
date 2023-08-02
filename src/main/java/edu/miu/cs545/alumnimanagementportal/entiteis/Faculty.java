@@ -7,14 +7,13 @@ import java.util.List;
 
 @Entity
 @Data
-public class UserProfile {
+public class Faculty {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @OneToOne()
     @JoinColumn(name = "user_id", unique = true)
     private User user;
-    private String picture;
-    private String professionalachievement;
-    private String bio;
-
+    @Embedded
+    private Address address;
+    private Integer phone;
 }
